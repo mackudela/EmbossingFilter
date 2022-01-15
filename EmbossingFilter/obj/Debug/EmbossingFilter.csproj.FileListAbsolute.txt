@@ -7,3 +7,13 @@ D:\VS projects\EmbossingFilter\EmbossingFilter\obj\Debug\EmbossingFilter.csproj.
 D:\VS projects\EmbossingFilter\EmbossingFilter\obj\Debug\EmbossingFilter.csproj.CoreCompileInputs.cache
 D:\VS projects\EmbossingFilter\EmbossingFilter\obj\Debug\EmbossingFilter.exe
 D:\VS projects\EmbossingFilter\EmbossingFilter\obj\Debug\EmbossingFilter.pdb
+C:\Users\Maciek\Desktop\EmbossingFilter\EmbossingFilter\bin\Debug\EmbossingFilter.exe.config
+C:\Users\Maciek\Desktop\EmbossingFilter\EmbossingFilter\bin\Debug\EmbossingFilter.exe
+C:\Users\Maciek\Desktop\EmbossingFilter\EmbossingFilter\bin\Debug\EmbossingFilter.pdb
+C:\Users\Maciek\Desktop\EmbossingFilter\EmbossingFilter\obj\Debug\EmbossingFilter.csproj.AssemblyReference.cache
+C:\Users\Maciek\Desktop\EmbossingFilter\EmbossingFilter\obj\Debug\EmbossingFilter.Form1.resources
+C:\Users\Maciek\Desktop\EmbossingFilter\EmbossingFilter\obj\Debug\EmbossingFilter.Properties.Resources.resources
+C:\Users\Maciek\Desktop\EmbossingFilter\EmbossingFilter\obj\Debug\EmbossingFilter.csproj.GenerateResource.cache
+C:\Users\Maciek\Desktop\EmbossingFilter\EmbossingFilter\obj\Debug\EmbossingFilter.csproj.CoreCompileInputs.cache
+C:\Users\Maciek\Desktop\EmbossingFilter\EmbossingFilter\obj\Debug\EmbossingFilter.exe
+C:\Users\Maciek\Desktop\EmbossingFilter\EmbossingFilter\obj\Debug\EmbossingFilter.pdb
