@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -19,7 +20,7 @@ namespace EmbossingFilter
         static extern int MyProc1(int a, int b);
 
         [DllImport(@"D:\VS projects\EmbossingFilter\x64\Debug\FilterCpp.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int RunCpp(int a, int b);
+        public static extern void RunCpp(byte[] array, int startingPoint, int finishPoint);
 
         public Form1()
         {
@@ -59,16 +60,92 @@ namespace EmbossingFilter
             string path = originalPathLabel.Text;
             Bitmap bmp = new Bitmap(path);
 
-            byte[] byteArray = getColorData(bmp, true); // Array of bytes with RGB values inside // !!! WORKING !!! WORKING !!!
-            byteArray = rgbToBgr(byteArray); // Changing RGB to BGR // !!! WORKING !!! WORKING !!!
+            byte[] byteArray = getColorData(bmp, false); // Array of bytes with RGB values inside // !!! WORKING !!! WORKING !!!
+            //byteArray = rgbToBgr(byteArray); // Changing RGB to BGR // !!! WORKING !!! WORKING !!!
 
-            Console.WriteLine("Original bitmap width: " + bmp.Width);
-            Console.WriteLine("Original bitmap height: " + bmp.Height);
-            Console.WriteLine("Original bitmap resolution: " + bmp.Width * bmp.Height);
-            Console.WriteLine("Original bitmap resolution * 3: " + bmp.Width * bmp.Height * 3);
-            Console.WriteLine("Byte Array length: " + byteArray.Length);
+            //////////////////////////////////// THREADS ////////////////////////////////////
+            byte[] outputArray = new byte[byteArray.Length];
 
-            Bitmap newBmp = new Bitmap(BuildImage(byteArray, bmp.Width, bmp.Height, bmp.Width*3, PixelFormat.Format24bppRgb)); // !!! WORKING !!! WORKING !!!
+            int numberOfThreads = this.threadsCounter.Value;
+
+            //int startingPoint = 0;
+            int finishPoint = (byteArray.Length / numberOfThreads);
+            int exactFinishPoint = finishPoint;
+            int remainder = (byteArray.Length % numberOfThreads);
+            //Console.WriteLine(remainder);
+            //byte[] finalOutput = new byte[byteArray.Length];
+
+            //byte[] copy = new byte[byteArray.Length];
+            //byteArray.CopyTo(copy, 0);
+            byteArray.CopyTo(outputArray, 0);
+
+            Thread[] threadsArray = new Thread[numberOfThreads];
+
+            //byte[] copy = new byte[byteArray.Length];
+
+            var watch = new System.Diagnostics.Stopwatch();
+            watch.Start();
+
+            for (int i = 0, startingPoint = 0; i < numberOfThreads; i++) {
+                if(i == 0) {
+                    startingPoint = 0;
+                } else {
+                    int temp = i;
+
+                    exactFinishPoint = finishPoint * (temp + 1);
+                    startingPoint = (finishPoint * (temp + 1)) - finishPoint;
+                }
+                //byte[] copy = new byte[exactFinishPoint - startingPoint];
+                //byte[] copy = new byte[byteArray.Length];
+                //byteArray.CopyTo(copy, 0);
+                //byte[] outputArray = new byte[byteArray.Length];
+                //byteArray.CopyTo(outputArray, 0);
+                if(i == numberOfThreads - 1) {
+                    int temp = startingPoint;
+                    int temp2 = exactFinishPoint + remainder;
+                    int temp3 = i;
+                    threadsArray[temp3] = new Thread(() => RunCpp(outputArray, temp, temp2));
+                    threadsArray[temp3].Start();
+                    //copy.CopyTo(byteArray, startingPoint);
+                    //outputArray.CopyTo(finalOutput, 0);
+                    Console.WriteLine(i + ": " + "starting point = " + startingPoint + " exactFinishPoint: " + exactFinishPoint + " remainder: " + remainder);
+                    //outputArray.CopyTo(byteArray, startingPoint);
+                } else {
+                    int temp = startingPoint;
+                    int temp2 = exactFinishPoint;
+                    int temp3 = i;
+                    threadsArray[temp3] = new Thread(() => RunCpp(outputArray, temp, temp2));
+                    threadsArray[temp3].Start();
+                    //copy.CopyTo(byteArray, startingPoint);
+                    //outputArray.CopyTo(finalOutput, 0);
+                    Console.WriteLine(i + ": " + "starting point = " + startingPoint + " exactFinishPoint: " + exactFinishPoint);
+                    //outputArray.CopyTo(byteArray, startingPoint);
+                }
+            }
+            //threadsArray[0] = new Thread(RunCpp);
+            //for(int i = 0; i < numberOfThreads; i++) {
+            //    threadsArray[i].Start();
+            //}
+            for(int i = 0; i < numberOfThreads; i++) {
+                threadsArray[i].Join();
+            }
+
+            watch.Stop();
+            Console.WriteLine($"time = {watch.ElapsedMilliseconds.ToString()} ms");
+
+            //////////////////////////////////// THREADS ////////////////////////////////////
+
+            //Console.WriteLine("Original bitmap width: " + bmp.Width);
+            //Console.WriteLine("Original bitmap height: " + bmp.Height);
+            //Console.WriteLine("Original bitmap resolution: " + bmp.Width * bmp.Height);
+            //Console.WriteLine("Original bitmap resolution * 3: " + bmp.Width * bmp.Height * 3);
+            //Console.WriteLine("Byte Array length: " + byteArray.Length);
+            //byte[] outputArray = new byte[byteArray.Length];
+
+            //RunCpp(byteArray, outputArray, byteArray.Length);
+
+
+            Bitmap newBmp = new Bitmap(BuildImage(outputArray, bmp.Width, bmp.Height, bmp.Width*3, PixelFormat.Format24bppRgb)); // !!! WORKING !!! WORKING !!!
             pictureBox2.Image = newBmp;
         }
 
