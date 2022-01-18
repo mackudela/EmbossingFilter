@@ -14,21 +14,21 @@ namespace EmbossingFilter
         /// </summary>
         
 
-        [DllImport(@"D:\VS projects\EmbossingFilter\x64\Debug\FilterAsm.dll")]
-        static extern int MyProc1(int a, int b);
+        //[DllImport(@"D:\VS projects\EmbossingFilter\x64\Debug\FilterAsm.dll")]
+        //static extern int MyProc1(int a, int b);
 
-        [DllImport(@"D:\VS projects\EmbossingFilter\x64\Debug\FilterCpp.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int RunCpp(int a, int b);
+        //[DllImport(@"D:\VS projects\EmbossingFilter\x64\Debug\FilterCpp.dll", CallingConvention = CallingConvention.Cdecl)]
+        //public static extern int RunCpp(int a, int b);
 
         [STAThread]
         static void Main()
         {
-            int x = 5, y = 13;
-            int retVal = MyProc1(x, y);
-            Console.WriteLine("ASM value: " + retVal);
+            //int x = 5, y = 13;
+            //int retVal = MyProc1(x, y);
+            //Console.WriteLine("ASM value: " + retVal);
 
-            int value = RunCpp(x, y);
-            Console.WriteLine("Cpp value: " + value);
+            //int value = RunCpp(x, y);
+            //Console.WriteLine("Cpp value: " + value);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

@@ -6,5 +6,5 @@ D:\VS projects\EmbossingFilter\EmbossingFilter\obj\x64\Debug\EmbossingFilter.csp
 D:\VS projects\EmbossingFilter\EmbossingFilter\obj\x64\Debug\EmbossingFilter.csproj.CoreCompileInputs.cache
 D:\VS projects\EmbossingFilter\EmbossingFilter\obj\x64\Debug\EmbossingFilter.exe
 D:\VS projects\EmbossingFilter\EmbossingFilter\obj\x64\Debug\EmbossingFilter.pdb
-D:\VS projects\EmbossingFilter\EmbossingFilter\obj\x64\Debug\EmbossingFilter.csproj.AssemblyReference.cache
 D:\VS projects\EmbossingFilter\EmbossingFilter\obj\x64\Debug\EmbossingFilter.Form1.resources
+D:\VS projects\EmbossingFilter\EmbossingFilter\obj\x64\Debug\EmbossingFilter.csproj.AssemblyReference.cache
