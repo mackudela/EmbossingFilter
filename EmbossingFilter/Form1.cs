@@ -68,20 +68,24 @@ namespace EmbossingFilter
 
             int numberOfThreads = this.threadsCounter.Value;
 
-            //int startingPoint = 0;
             int finishPoint = (byteArray.Length / numberOfThreads);
+            int rgbAlignment = 0;
+
+            if(finishPoint % 3 == 1) {
+                finishPoint -= 1;
+                rgbAlignment = 1 * numberOfThreads;
+            } else if(finishPoint % 3 == 2) {
+                finishPoint -= 2;
+                rgbAlignment = 2 * numberOfThreads;
+            }
+
             int exactFinishPoint = finishPoint;
             int remainder = (byteArray.Length % numberOfThreads);
-            //Console.WriteLine(remainder);
-            //byte[] finalOutput = new byte[byteArray.Length];
 
-            //byte[] copy = new byte[byteArray.Length];
-            //byteArray.CopyTo(copy, 0);
             byteArray.CopyTo(outputArray, 0);
 
             Thread[] threadsArray = new Thread[numberOfThreads];
 
-            //byte[] copy = new byte[byteArray.Length];
 
             var watch = new System.Diagnostics.Stopwatch();
             watch.Start();
@@ -95,54 +99,30 @@ namespace EmbossingFilter
                     exactFinishPoint = finishPoint * (temp + 1);
                     startingPoint = (finishPoint * (temp + 1)) - finishPoint;
                 }
-                //byte[] copy = new byte[exactFinishPoint - startingPoint];
-                //byte[] copy = new byte[byteArray.Length];
-                //byteArray.CopyTo(copy, 0);
-                //byte[] outputArray = new byte[byteArray.Length];
-                //byteArray.CopyTo(outputArray, 0);
+
                 if(i == numberOfThreads - 1) {
                     int temp = startingPoint;
-                    int temp2 = exactFinishPoint + remainder;
+                    int temp2 = exactFinishPoint + remainder + rgbAlignment;
                     int temp3 = i;
                     threadsArray[temp3] = new Thread(() => RunCpp(outputArray, temp, temp2));
                     threadsArray[temp3].Start();
-                    //copy.CopyTo(byteArray, startingPoint);
-                    //outputArray.CopyTo(finalOutput, 0);
                     Console.WriteLine(i + ": " + "starting point = " + startingPoint + " exactFinishPoint: " + exactFinishPoint + " remainder: " + remainder);
-                    //outputArray.CopyTo(byteArray, startingPoint);
                 } else {
                     int temp = startingPoint;
                     int temp2 = exactFinishPoint;
                     int temp3 = i;
                     threadsArray[temp3] = new Thread(() => RunCpp(outputArray, temp, temp2));
                     threadsArray[temp3].Start();
-                    //copy.CopyTo(byteArray, startingPoint);
-                    //outputArray.CopyTo(finalOutput, 0);
                     Console.WriteLine(i + ": " + "starting point = " + startingPoint + " exactFinishPoint: " + exactFinishPoint);
-                    //outputArray.CopyTo(byteArray, startingPoint);
                 }
             }
-            //threadsArray[0] = new Thread(RunCpp);
-            //for(int i = 0; i < numberOfThreads; i++) {
-            //    threadsArray[i].Start();
-            //}
             for(int i = 0; i < numberOfThreads; i++) {
                 threadsArray[i].Join();
             }
 
             watch.Stop();
             Console.WriteLine($"time = {watch.ElapsedMilliseconds.ToString()} ms");
-
             //////////////////////////////////// THREADS ////////////////////////////////////
-
-            //Console.WriteLine("Original bitmap width: " + bmp.Width);
-            //Console.WriteLine("Original bitmap height: " + bmp.Height);
-            //Console.WriteLine("Original bitmap resolution: " + bmp.Width * bmp.Height);
-            //Console.WriteLine("Original bitmap resolution * 3: " + bmp.Width * bmp.Height * 3);
-            //Console.WriteLine("Byte Array length: " + byteArray.Length);
-            //byte[] outputArray = new byte[byteArray.Length];
-
-            //RunCpp(byteArray, outputArray, byteArray.Length);
 
 
             Bitmap newBmp = new Bitmap(BuildImage(outputArray, bmp.Width, bmp.Height, bmp.Width*3, PixelFormat.Format24bppRgb)); // !!! WORKING !!! WORKING !!!
