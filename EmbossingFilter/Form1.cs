@@ -20,7 +20,7 @@ namespace EmbossingFilter
         static extern int MyProc1(int a, int b);
 
         [DllImport(@"D:\VS projects\EmbossingFilter\x64\Debug\FilterCpp.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void RunCpp(byte[] array, int startingPoint, int finishPoint);
+        public static extern void RunCpp(byte[] outputArray, byte[] maskArray, int startingPoint, int finishPoint, int width, int maskWidth);
 
         public Form1()
         {
@@ -63,6 +63,29 @@ namespace EmbossingFilter
             byte[] byteArray = getColorData(bmp, false); // Array of bytes with RGB values inside // !!! WORKING !!! WORKING !!!
             //byteArray = rgbToBgr(byteArray); // Changing RGB to BGR // !!! WORKING !!! WORKING !!!
 
+            //   tab[i][j] = tab[i * długośćWiersza  + j]
+            //   tab[i][j * 3] ====> [i * długość wiersza + j * 3]
+
+            Bitmap maskBmp = new Bitmap(bmp, bmp.Width + 2, bmp.Height + 2);
+
+            //for(int i = 0; i < maskBmp.Width; i++) {
+            //    for(int j = 0; j < maskBmp.Height; j++) {
+            //        if(i == 0 || j == 0 || i == maskBmp.Width - 1 || j == maskBmp.Height - 1) {
+            //            maskBmp.SetPixel(i, j, Color.Black); 
+            //        } else {
+            //            maskBmp.SetPixel(i, j, bmp.GetPixel(i - 1, j - 1));
+            //        }
+            //    }
+            //}
+
+
+            byte[] maskArray = getColorData(maskBmp, false);
+
+            Console.WriteLine("maskArray Length actual: " + maskArray.Length);
+            Console.WriteLine("byteArray Length: " + byteArray.Length);
+            Console.WriteLine("byteArray Length by hand: " + bmp.Width * bmp.Height * 3);
+            Console.WriteLine("maskArray Length by hand: " + (bmp.Width + 2) * (bmp.Height + 2) * 3);
+
             //////////////////////////////////// THREADS ////////////////////////////////////
             byte[] outputArray = new byte[byteArray.Length];
 
@@ -104,14 +127,14 @@ namespace EmbossingFilter
                     int temp = startingPoint;
                     int temp2 = exactFinishPoint + remainder + rgbAlignment;
                     int temp3 = i;
-                    threadsArray[temp3] = new Thread(() => RunCpp(outputArray, temp, temp2));
+                    threadsArray[temp3] = new Thread(() => RunCpp(outputArray, maskArray, temp, temp2, bmp.Width, maskBmp.Width));
                     threadsArray[temp3].Start();
                     Console.WriteLine(i + ": " + "starting point = " + startingPoint + " exactFinishPoint: " + exactFinishPoint + " remainder: " + remainder);
                 } else {
                     int temp = startingPoint;
                     int temp2 = exactFinishPoint;
                     int temp3 = i;
-                    threadsArray[temp3] = new Thread(() => RunCpp(outputArray, temp, temp2));
+                    threadsArray[temp3] = new Thread(() => RunCpp(outputArray, maskArray, temp, temp2, bmp.Width, maskBmp.Width));
                     threadsArray[temp3].Start();
                     Console.WriteLine(i + ": " + "starting point = " + startingPoint + " exactFinishPoint: " + exactFinishPoint);
                 }
