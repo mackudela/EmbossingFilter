@@ -1,71 +1,76 @@
 #include <cstddef>
 #include <cstdint>
 #include <iostream>
-extern "C" __declspec(dllexport) void RunCpp(unsigned char* outputArray, unsigned char* maskArray, int startingPoint, int finishPoint, int width, int maskWidth) {
+extern "C" __declspec(dllexport) void RunCpp(unsigned char* outputArray, unsigned char* maskArray, int startingPoint, int finishPoint, int width, int height) {
     
-    /*int mask, maskG, maskB, middleR, middleG, middleB, southR, southB, southG,
-        northR, northB, northG = 0;*/
-    int mask, middle, north, south, row, addition, maskRow = 0;
-
-    //int northWestR = startingPoint - width * 3 - 6 - width * 3 - 6 - 3; // north west R
-    //int northWestG = northWestR + 1; // North west G
-    //int northWestB = northWestR + 2; // North west B
-    // output[0,0] -> mask[1,1]
-
+    int check, middle, north, south, mask = 0;
     for (startingPoint; startingPoint < finishPoint; startingPoint++) {
-        row = startingPoint / (3 * width);
+        //check = (startingPoint / 3) / width;
+        //std::cout << "startingPoint: " << startingPoint << " finishPoint: " << finishPoint << " width: " << width << " height: " << height << std::endl;
+        if (startingPoint / (3 * width) == 0 ||
+            startingPoint / (3 * width) == height - 1 || 
+            startingPoint % (width * 3) == 0 || (startingPoint + 3) % (width * 3) == 0
+            ) {
+            std::cout << "+";
+            startingPoint += 2;
+            continue;
+        }
         
-        maskRow = startingPoint / (3 * maskWidth);
+        /*if (check == 0 || startingPoint % (3 * width) == 0 ||
+            (startingPoint + 3) % (3 * width) == 0 || 
+            check == height - 1) {
+            startingPoint += 2;
+            continue;
+        }*/
+        middle = startingPoint;
+        north = middle - (width * 3);
+        south = middle + (width * 3);
 
-        if (row == maskRow && row != 0) {
-            addition = (row - 1) * 2 * 3;
-        }
-        else {
-            addition = row * 2 * 3;
-        }
-
-
-
-
-        middle = startingPoint + (width * 3) + 6 + 3 + addition;
-        //middleG = middleR + 1;
-        //middleB = middleR + 2;
-        north = middle - (width * 3) - 6; // north west R
-        //northG = northR + 1; // North west G
-        //northB = northR + 2; // North west B
-        south = middle + (width * 3) + 6; 
-        //southB = southR + 1;
-        //southG = southR + 2;
-
-        /*mask =
-            -maskArray[north - 3] + maskArray[north + 3] 
-            -maskArray[middle - 3] + maskArray[middle] +
-            maskArray[middle + 3] - maskArray[south - 3] +
-            maskArray[south + 3];*/
         mask =
-            maskArray[north - 3] + maskArray[north] + maskArray[north + 3] +
-            maskArray[middle - 3] + maskArray[middle] + maskArray[middle + 3] +
-            maskArray[south - 3] + maskArray[south] + maskArray[south + 3];
-        mask /= 9;
+            (-1 * maskArray[north - 3]) + (0 * maskArray[north]) + (1 * maskArray[north + 3]) +
+            (-1 * maskArray[middle - 3]) + (1 * maskArray[middle]) + (1 * maskArray[middle + 3]) +
+            (-1 * maskArray[south - 3]) + (0 * maskArray[south]) + (1 * maskArray[south + 3]);
+        mask /= 1;
+        /*if (mask < 0) {
+            mask = -mask;
+        }
+        if (mask > 255) {
+            mask = mask - 255;
+        }*/
+        //std::cout << mask << std::endl;
         outputArray[startingPoint] = mask;
-        //std::cout << mask;
     }
-    
-    
-    
-    
-    
-    
-    
-    /*int i = startingPoint;
-    unsigned char temp;*/
-    //uint8_t* output = new uint8_t;
-    //for (; i < finishPoint; i += 3) {
 
-    //    /////////////////////////////////////////////////////
-    //    //swap R and B; raw_image[i + 1] is G, so it stays where it is.
-    //    /*temp = byteArray[i + 0];
-    //    byteArray[i + 0] = byteArray[i + 2];
-    //    byteArray[i + 2] = temp;*/
-    //}
+
+        //int mask, middle, north, south, row, addition, maskRow = 0;
+
+        //for (startingPoint; startingPoint < finishPoint; startingPoint++) {
+        //    row = startingPoint / (3 * width);
+        //    
+        //    maskRow = startingPoint / (3 * maskWidth);
+
+        //    if (row == maskRow && row != 0) {
+        //        addition = (row - 1) * 2 * 3;
+        //    }
+        //    else {
+        //        addition = row * 2 * 3;
+        //    }
+
+        //    middle = startingPoint + maskWidth + 3 + addition;
+
+        //    north = middle - maskWidth; 
+        //    south = middle + maskWidth; 
+
+        //    /*mask =
+        //        -maskArray[north - 3] + maskArray[north + 3] 
+        //        -maskArray[middle - 3] + maskArray[middle] +
+        //        maskArray[middle + 3] - maskArray[south - 3] +
+        //        maskArray[south + 3];*/
+        //    mask =
+        //        maskArray[north - 3] + maskArray[north] + maskArray[north + 3] +
+        //        maskArray[middle - 3] + maskArray[middle] + maskArray[middle + 3] +
+        //        maskArray[south - 3] + maskArray[south] + maskArray[south + 3];
+        //    mask /= 9;
+        //    outputArray[startingPoint] = mask;
+        //}
 }

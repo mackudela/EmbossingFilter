@@ -1,2 +1,3 @@
 ﻿  FilterCpp.cpp
+D:\VS projects\EmbossingFilter\FilterCpp\FilterCpp.cpp(6,9): warning C4101: 'check': unreferenced local variable
   FilterCpp.vcxproj -> D:\VS projects\EmbossingFilter\x64\Debug\FilterCpp.dll
