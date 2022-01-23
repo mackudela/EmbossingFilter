@@ -61,6 +61,8 @@ namespace EmbossingFilter
             Bitmap bmp = new Bitmap(path);
 
             byte[] byteArray = getColorData(bmp, false); // Array of bytes with GBR values inside // !!! WORKING !!! WORKING !!!
+            //byte[] newArray = getColorData(bmp, false); // Array of bytes with GBR values inside // !!! WORKING !!! WORKING !!!
+            makeGrayscale(byteArray);
             //byte[] byteArray = new byte[bmp.Width * bmp.Height * 3];
             //byteArray = rgbToBgr(byteArray); // Changing RGB to BGR // !!! WORKING !!! WORKING !!!
 
@@ -68,13 +70,13 @@ namespace EmbossingFilter
             //   tab[i][j * 3] ====> [i * długość wiersza + j * 3]
 
 
-            //Bitmap maskBmp = new Bitmap(bmp, bmp.Width + 2, bmp.Height + 2);
+            Bitmap maskBmp = new Bitmap(bmp);
             //byte[] maskArray = getColorData(maskBmp, false);
 
             //Console.WriteLine("maskArray Length actual: " + maskArray.Length);
-            Console.WriteLine("byteArray Length: " + byteArray.Length);
-            Console.WriteLine("byteArray Length by hand: " + bmp.Width * bmp.Height * 3);
-            Console.WriteLine("maskArray Length by hand: " + (bmp.Width + 2) * (bmp.Height + 2) * 3);
+            //Console.WriteLine("byteArray Length: " + byteArray.Length);
+            //Console.WriteLine("byteArray Length by hand: " + bmp.Width * bmp.Height * 3);
+            //Console.WriteLine("maskArray Length by hand: " + (bmp.Width + 2) * (bmp.Height + 2) * 3);
 
             //////////////////////////////////// THREADS ////////////////////////////////////
             byte[] outputArray = new byte[byteArray.Length];
@@ -94,13 +96,33 @@ namespace EmbossingFilter
             //Console.WriteLine("(3,2).G but inside array: " + byteArray[3 * (bmp.Width) * 3 + 7]);
             //Console.WriteLine("(3,2).R but inside array: " + byteArray[3 * (bmp.Width) * 3 + 8]);
 
-
+            //int mask = 0;
             //for(int i = 0; i < bmp.Height; i++) {
             //    int k = 0;
             //    for(int j = 0; j < bmp.Width; j++) {
-            //        byteArray[i * bmp.Width + k] = bmp.GetPixel(i, j).B;
-            //        byteArray[i * bmp.Width + k + 1] = bmp.GetPixel(i, j).G;
-            //        byteArray[i * bmp.Width + k + 2] = bmp.GetPixel(i, j).R;
+            //        //maskBmp.SetPixel(i, j, bmp.GetPixel(i, j));
+            //        if(i == 0 || i == bmp.Height - 1 || j == 0 || j == bmp.Width - 1) {
+            //            k += 3;
+            //            continue;
+            //        }
+            //        mask = 
+            //            (-1 * bmp.GetPixel(i - 1,j - 1).B) + (0 * bmp.GetPixel(i - 1, j).B) + (1 * bmp.GetPixel(i - 1, j + 1).B) +
+            //            (-1 * bmp.GetPixel(i, j - 1).B) + (1 * bmp.GetPixel(i, j).B) + (1 * bmp.GetPixel(i, j + 1).B) +
+            //            (-1 * bmp.GetPixel(i + 1, j - 1).B) + (0 * bmp.GetPixel(i + 1, j).B) + (1 * bmp.GetPixel(i + 1, j + 1).B);
+            //        newArray[i * bmp.Width + k + 0] = (byte)mask;
+
+            //        mask =
+            //            (-1 * bmp.GetPixel(i - 1, j - 1).G) + (0 * bmp.GetPixel(i - 1, j).G) + (1 * bmp.GetPixel(i - 1, j + 1).G) +
+            //            (-1 * bmp.GetPixel(i, j - 1).G) + (1 * bmp.GetPixel(i, j).G) + (1 * bmp.GetPixel(i, j + 1).G) +
+            //            (-1 * bmp.GetPixel(i + 1, j - 1).G) + (0 * bmp.GetPixel(i + 1, j).G) + (1 * bmp.GetPixel(i + 1, j + 1).G);
+            //        newArray[i * bmp.Width + k + 1] = (byte)mask;
+
+            //        mask =
+            //            (-1 * bmp.GetPixel(i - 1, j - 1).R) + (0 * bmp.GetPixel(i - 1, j).R) + (1 * bmp.GetPixel(i - 1, j + 1).R) +
+            //            (-1 * bmp.GetPixel(i, j - 1).R) + (1 * bmp.GetPixel(i, j).R) + (1 * bmp.GetPixel(i, j + 1).R) +
+            //            (-1 * bmp.GetPixel(i + 1, j - 1).R) + (0 * bmp.GetPixel(i + 1, j).R) + (1 * bmp.GetPixel(i + 1, j + 1).R);
+            //        newArray[i * bmp.Width + k + 2] = (byte)mask;
+
             //        //Console.WriteLine("Bmp G: " + bmp.GetPixel(i, j).G + " array G: " + byteArray[i * bmp.Width + k + 1]);
             //        //Console.WriteLine("Bmp R: " + bmp.GetPixel(i, j).R + " array R: " + byteArray[i * bmp.Width + k + 2]);
             //        k += 3;
@@ -126,6 +148,8 @@ namespace EmbossingFilter
 
             Thread[] threadsArray = new Thread[numberOfThreads];
 
+            int width = bmp.Width;
+            int height = bmp.Height;
 
             var watch = new System.Diagnostics.Stopwatch();
             watch.Start();
@@ -144,14 +168,15 @@ namespace EmbossingFilter
                     int temp = startingPoint;
                     int temp2 = exactFinishPoint + remainder + rgbAlignment;
                     int temp3 = i;
-                    threadsArray[temp3] = new Thread(() => RunCpp(outputArray, byteArray, temp, temp2, bmp.Width, bmp.Height));
+                    threadsArray[temp3] = new Thread(() => RunCpp(outputArray, byteArray, temp, temp2, width, height));
                     //threadsArray[temp3].Start();
                     //Console.WriteLine(i + ": " + "starting point = " + startingPoint + " exactFinishPoint: " + exactFinishPoint + " remainder: " + remainder);
                 } else {
                     int temp = startingPoint;
                     int temp2 = exactFinishPoint;
                     int temp3 = i;
-                    threadsArray[temp3] = new Thread(() => RunCpp(outputArray, byteArray, temp, temp2, bmp.Width, bmp.Height));
+                    threadsArray[temp3] = new Thread(() => RunCpp(outputArray, byteArray, temp, temp2, width, height));
+                    //threadsArray[temp3] = new Thread(new ThreadStart(ThreadProc(outputArray, byteArray, temp, temp2, bmp.Width, bmp.Height)));
                     //threadsArray[temp3].Start();
                     //Console.WriteLine(i + ": " + "starting point = " + startingPoint + " exactFinishPoint: " + exactFinishPoint);
                 }
@@ -177,6 +202,9 @@ namespace EmbossingFilter
             //}
         }
 
+        //public static void ThreadProc(byte[] outputArray, byte[] byteArray, int temp, int temp2, int Width, int Height) {
+        //    RunCpp(outputArray, byteArray, temp, temp2, Width, Height);
+        //}
 
         private void label1_Click(object sender, EventArgs e) {
 
@@ -187,6 +215,22 @@ namespace EmbossingFilter
             threadsLabel.Text = "Number of threads: " + threadsCounter.Value;
         }
 
+        private static void makeGrayscale(byte[] byteArray) {
+            int i;
+            double avg;
+
+            for (i = 0; i < byteArray.Length; i += 3) {
+                //swap R and B; raw_image[i + 1] is G, so it stays where it is.
+                //avg = 0;
+                avg = 0.114 * byteArray[i];
+                avg += 0.587 * byteArray[i + 1];
+                avg += 0.299 * byteArray[i + 2];
+                //avg /= 3;
+                byteArray[i] = (byte)avg;
+                byteArray[i + 1] = (byte)avg;
+                byteArray[i + 2] = (byte)avg;
+            }
+        }
 
         private static byte[] getColorData(Bitmap bmp, bool reverseRGB)
         {
