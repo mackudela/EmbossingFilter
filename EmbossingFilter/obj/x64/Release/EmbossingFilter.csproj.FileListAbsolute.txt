@@ -1,0 +1,10 @@
+D:\VS projects\EmbossingFilter\EmbossingFilter\bin\x64\Release\EmbossingFilter.exe.config
+D:\VS projects\EmbossingFilter\EmbossingFilter\bin\x64\Release\EmbossingFilter.exe
+D:\VS projects\EmbossingFilter\EmbossingFilter\bin\x64\Release\EmbossingFilter.pdb
+D:\VS projects\EmbossingFilter\EmbossingFilter\obj\x64\Release\EmbossingFilter.csproj.AssemblyReference.cache
+D:\VS projects\EmbossingFilter\EmbossingFilter\obj\x64\Release\EmbossingFilter.Form1.resources
+D:\VS projects\EmbossingFilter\EmbossingFilter\obj\x64\Release\EmbossingFilter.Properties.Resources.resources
+D:\VS projects\EmbossingFilter\EmbossingFilter\obj\x64\Release\EmbossingFilter.csproj.GenerateResource.cache
+D:\VS projects\EmbossingFilter\EmbossingFilter\obj\x64\Release\EmbossingFilter.csproj.CoreCompileInputs.cache
+D:\VS projects\EmbossingFilter\EmbossingFilter\obj\x64\Release\EmbossingFilter.exe
+D:\VS projects\EmbossingFilter\EmbossingFilter\obj\x64\Release\EmbossingFilter.pdb

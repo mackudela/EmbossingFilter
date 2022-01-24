@@ -16,17 +16,10 @@ extern "C" __declspec(dllexport) void RunCpp(unsigned char* outputArray, unsigne
             continue;
         }
         
-        /*if (check == 0 || startingPoint % (3 * width) == 0 ||
-            (startingPoint + 3) % (3 * width) == 0 || 
-            check == height - 1) {
-            startingPoint += 2;
-            continue;
-        }*/
         middle = startingPoint;
         north = middle - (width * 3);
         south = middle + (width * 3);
-        //std::cout << "StartingPoint: " << startingPoint << " width*3: " << width * 3 << " north: " << north
-        //    << " south: " << south << std::endl;
+
 
         mask =
             (0 * maskArray[north - 3]) + (0 * maskArray[north]) + (0 * maskArray[north + 3]) +

@@ -17,9 +17,11 @@ namespace EmbossingFilter
     public partial class Form1 : Form
     {
         [DllImport(@"D:\VS projects\EmbossingFilter\x64\Debug\FilterAsm.dll")]
+        //[DllImport(@"D:\VS projects\EmbossingFilter\x64\Release\FilterAsm.dll")]
         static extern void RunAsm(byte[] outputArray, byte[] maskArray, int startingPoint, int finishPoint, int width, int height);
 
         [DllImport(@"D:\VS projects\EmbossingFilter\x64\Debug\FilterCpp.dll", CallingConvention = CallingConvention.Cdecl)]
+        //[DllImport(@"D:\VS projects\EmbossingFilter\x64\Release\FilterCpp.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void RunCpp(byte[] outputArray, byte[] maskArray, int startingPoint, int finishPoint, int width, int height);
 
         public Form1()
@@ -42,17 +44,12 @@ namespace EmbossingFilter
 
             filterButton.Visible = true;
             threadsCounter.Visible = true;
-            checkedListBox1.Visible = true;
             threadsLabel.Visible = true;
+            asmCheckbox.Visible = true;
+            cppCheckbox.Visible = true;
 
             originalPathLabel.Text = dlg.FileName;
             originalPathLabel.ForeColor = Color.Green;
-        }
-
-
-        private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
 
 
@@ -94,45 +91,75 @@ namespace EmbossingFilter
 
             var watch = new System.Diagnostics.Stopwatch();
             watch.Start();
+            if (cppCheckbox.Checked == true) {
+                for (int i = 0, startingPoint = 0; i < numberOfThreads; i++) {
+                    if (i == 0) {
+                        startingPoint = 0;
+                    }
+                    else {
+                        int temp = i;
 
-            for (int i = 0, startingPoint = 0; i < numberOfThreads; i++) {
-                if(i == 0) {
-                    startingPoint = 0;
-                } else {
-                    int temp = i;
+                        exactFinishPoint = finishPoint * (temp + 1);
+                        startingPoint = (finishPoint * (temp + 1)) - finishPoint;
+                    }
 
-                    exactFinishPoint = finishPoint * (temp + 1);
-                    startingPoint = (finishPoint * (temp + 1)) - finishPoint;
+                    if (i == numberOfThreads - 1) {
+                        int temp = startingPoint;
+                        int temp2 = exactFinishPoint + remainder + rgbAlignment;
+                        int temp3 = i;
+                        threadsArray[temp3] = new Thread(() => RunCpp(outputArray, byteArray, temp, temp2, width, height));
+                    }
+                    else {
+                        int temp = startingPoint;
+                        int temp2 = exactFinishPoint;
+                        int temp3 = i;
+                        threadsArray[temp3] = new Thread(() => RunCpp(outputArray, byteArray, temp, temp2, width, height));
+                    }
                 }
-
-                if(i == numberOfThreads - 1) {
-                    int temp = startingPoint;
-                    int temp2 = exactFinishPoint + remainder + rgbAlignment;
-                    int temp3 = i;
-                    threadsArray[temp3] = new Thread(() => RunCpp(outputArray, byteArray, temp, temp2, width, height));
-                    //threadsArray[temp3] = new Thread(() => RunAsm(outputArray, byteArray, temp, temp2, width, height));
-                    //threadsArray[temp3].Start();
-                    //Console.WriteLine(i + ": " + "starting point = " + startingPoint + " exactFinishPoint: " + exactFinishPoint + " remainder: " + remainder);
-                } else {
-                    int temp = startingPoint;
-                    int temp2 = exactFinishPoint;
-                    int temp3 = i;
-                    threadsArray[temp3] = new Thread(() => RunCpp(outputArray, byteArray, temp, temp2, width, height));
-                    //threadsArray[temp3] = new Thread(() => RunAsm(outputArray, byteArray, temp, temp2, width, height));
-                    //threadsArray[temp3] = new Thread(new ThreadStart(ThreadProc(outputArray, byteArray, temp, temp2, bmp.Width, bmp.Height)));
-                    //threadsArray[temp3].Start();
-                    //Console.WriteLine(i + ": " + "starting point = " + startingPoint + " exactFinishPoint: " + exactFinishPoint);
+                for (int i = 0; i < numberOfThreads; i++) {
+                    threadsArray[i].Start();
                 }
-            }
-            for(int i = 0; i < numberOfThreads; i++) {
-                threadsArray[i].Start();
-            }
-            for(int i = 0; i < numberOfThreads; i++) {
-                threadsArray[i].Join();
-            }
+                for (int i = 0; i < numberOfThreads; i++) {
+                    threadsArray[i].Join();
+                }
+                watch.Stop();
+                cppTime.Text = "C++ time: " + watch.ElapsedMilliseconds + " ms";
+            } else if (asmCheckbox.Checked == true) {
+                for (int i = 0, startingPoint = 0; i < numberOfThreads; i++) {
+                    if (i == 0) {
+                        startingPoint = 0;
+                    }
+                    else {
+                        int temp = i;
+                        exactFinishPoint = finishPoint * (temp + 1);
+                        startingPoint = (finishPoint * (temp + 1)) - finishPoint;
+                    }
 
-            watch.Stop();
-            Console.WriteLine($"time = {watch.ElapsedMilliseconds.ToString()} ms");
+                    if (i == numberOfThreads - 1) {
+                        int temp = startingPoint;
+                        int temp2 = exactFinishPoint + remainder + rgbAlignment;
+                        int temp3 = i;
+                        threadsArray[temp3] = new Thread(() => RunAsm(outputArray, byteArray, temp, temp2, width, height));
+                    }
+                    else {
+                        int temp = startingPoint;
+                        int temp2 = exactFinishPoint;
+                        int temp3 = i;
+                        threadsArray[temp3] = new Thread(() => RunAsm(outputArray, byteArray, temp, temp2, width, height));
+                    }
+                }
+                for (int i = 0; i < numberOfThreads; i++) {
+                    threadsArray[i].Start();
+                }
+                for (int i = 0; i < numberOfThreads; i++) {
+                    threadsArray[i].Join();
+                }
+                watch.Stop();
+                asmTime.Text = "Asm time: " + watch.ElapsedMilliseconds + " ms";
+            }
+            //watch.Stop();
+            //Console.WriteLine($"time = {watch.ElapsedMilliseconds.ToString()} ms");
+
             //////////////////////////////////// THREADS ////////////////////////////////////
 
 
@@ -143,10 +170,6 @@ namespace EmbossingFilter
             Bitmap newBmp = new Bitmap(BuildImage(outputArray, bmp.Width, bmp.Height, stride, PixelFormat.Format24bppRgb)); // !!! WORKING !!! WORKING !!!
             pictureBox2.Image = newBmp;
             newBmp.Save("output.bmp", ImageFormat.Bmp);
-        }
-
-        private void label1_Click(object sender, EventArgs e) {
-
         }
 
 
@@ -258,5 +281,25 @@ namespace EmbossingFilter
             return newImage;
         }
 
+
+        private void asmCheckbox_OnClick(object sender, EventArgs e) {
+            if (cppCheckbox.Checked == false && asmCheckbox.Checked == true) {
+                cppCheckbox.Checked = true;
+                asmCheckbox.Checked = false;
+            } else if (cppCheckbox.Checked == true && asmCheckbox.Checked == false) {
+                cppCheckbox.Checked = false;
+                asmCheckbox.Checked = true;
+            }
+        }
+
+        private void cppCheckbox_OnClick(object sender, EventArgs e) {
+            if (cppCheckbox.Checked == true && asmCheckbox.Checked == false) {
+                cppCheckbox.Checked = false;
+                asmCheckbox.Checked = true;
+            } else if (cppCheckbox.Checked == false && asmCheckbox.Checked == true) {
+                cppCheckbox.Checked = true;
+                asmCheckbox.Checked = false;
+            }
+        }
     }
 }

@@ -31,12 +31,15 @@ namespace EmbossingFilter
         {
             this.loadButton = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.threadsCounter = new System.Windows.Forms.TrackBar();
             this.filterButton = new System.Windows.Forms.Button();
             this.threadsLabel = new System.Windows.Forms.Label();
             this.originalPathLabel = new System.Windows.Forms.Label();
+            this.cppCheckbox = new System.Windows.Forms.CheckBox();
+            this.asmCheckbox = new System.Windows.Forms.CheckBox();
+            this.cppTime = new System.Windows.Forms.Label();
+            this.asmTime = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.threadsCounter)).BeginInit();
@@ -59,16 +62,6 @@ namespace EmbossingFilter
             this.pictureBox1.Size = new System.Drawing.Size(571, 334);
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
-            // 
-            // checkedListBox1
-            // 
-            this.checkedListBox1.FormattingEnabled = true;
-            this.checkedListBox1.Location = new System.Drawing.Point(12, 67);
-            this.checkedListBox1.Name = "checkedListBox1";
-            this.checkedListBox1.Size = new System.Drawing.Size(138, 49);
-            this.checkedListBox1.TabIndex = 2;
-            this.checkedListBox1.Visible = false;
-            this.checkedListBox1.SelectedIndexChanged += new System.EventHandler(this.checkedListBox1_SelectedIndexChanged);
             // 
             // pictureBox2
             // 
@@ -110,7 +103,6 @@ namespace EmbossingFilter
             this.threadsLabel.TabIndex = 6;
             this.threadsLabel.Text = "Number of threads: 1";
             this.threadsLabel.Visible = false;
-            this.threadsLabel.Click += new System.EventHandler(this.label1_Click);
             // 
             // originalPathLabel
             // 
@@ -120,17 +112,64 @@ namespace EmbossingFilter
             this.originalPathLabel.Size = new System.Drawing.Size(0, 13);
             this.originalPathLabel.TabIndex = 7;
             // 
+            // cppCheckbox
+            // 
+            this.cppCheckbox.AutoCheck = false;
+            this.cppCheckbox.AutoSize = true;
+            this.cppCheckbox.Checked = true;
+            this.cppCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cppCheckbox.Location = new System.Drawing.Point(15, 59);
+            this.cppCheckbox.Name = "cppCheckbox";
+            this.cppCheckbox.Size = new System.Drawing.Size(48, 17);
+            this.cppCheckbox.TabIndex = 8;
+            this.cppCheckbox.Text = "C++ ";
+            this.cppCheckbox.UseVisualStyleBackColor = true;
+            this.cppCheckbox.Visible = false;
+            this.cppCheckbox.Click += new System.EventHandler(this.cppCheckbox_OnClick);
+            // 
+            // asmCheckbox
+            // 
+            this.asmCheckbox.AutoCheck = false;
+            this.asmCheckbox.AutoSize = true;
+            this.asmCheckbox.Location = new System.Drawing.Point(15, 82);
+            this.asmCheckbox.Name = "asmCheckbox";
+            this.asmCheckbox.Size = new System.Drawing.Size(49, 17);
+            this.asmCheckbox.TabIndex = 9;
+            this.asmCheckbox.Text = "ASM";
+            this.asmCheckbox.UseVisualStyleBackColor = true;
+            this.asmCheckbox.Visible = false;
+            this.asmCheckbox.Click += new System.EventHandler(this.asmCheckbox_OnClick);
+            // 
+            // cppTime
+            // 
+            this.cppTime.AutoSize = true;
+            this.cppTime.Location = new System.Drawing.Point(69, 60);
+            this.cppTime.Name = "cppTime";
+            this.cppTime.Size = new System.Drawing.Size(0, 13);
+            this.cppTime.TabIndex = 10;
+            // 
+            // asmTime
+            // 
+            this.asmTime.AutoSize = true;
+            this.asmTime.Location = new System.Drawing.Point(69, 82);
+            this.asmTime.Name = "asmTime";
+            this.asmTime.Size = new System.Drawing.Size(0, 13);
+            this.asmTime.TabIndex = 11;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1284, 654);
+            this.Controls.Add(this.asmTime);
+            this.Controls.Add(this.cppTime);
+            this.Controls.Add(this.asmCheckbox);
+            this.Controls.Add(this.cppCheckbox);
             this.Controls.Add(this.originalPathLabel);
             this.Controls.Add(this.threadsLabel);
             this.Controls.Add(this.filterButton);
             this.Controls.Add(this.threadsCounter);
             this.Controls.Add(this.pictureBox2);
-            this.Controls.Add(this.checkedListBox1);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.loadButton);
             this.Name = "Form1";
@@ -146,12 +185,15 @@ namespace EmbossingFilter
         #endregion
         private System.Windows.Forms.Button loadButton;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.CheckedListBox checkedListBox1;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.TrackBar threadsCounter;
         private System.Windows.Forms.Button filterButton;
         private System.Windows.Forms.Label threadsLabel;
         private System.Windows.Forms.Label originalPathLabel;
+        private System.Windows.Forms.CheckBox cppCheckbox;
+        private System.Windows.Forms.CheckBox asmCheckbox;
+        private System.Windows.Forms.Label cppTime;
+        private System.Windows.Forms.Label asmTime;
     }
 }
 

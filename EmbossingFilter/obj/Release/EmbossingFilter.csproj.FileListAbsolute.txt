@@ -7,3 +7,4 @@ D:\VS projects\EmbossingFilter\EmbossingFilter\obj\Release\EmbossingFilter.cspro
 D:\VS projects\EmbossingFilter\EmbossingFilter\obj\Release\EmbossingFilter.csproj.CoreCompileInputs.cache
 D:\VS projects\EmbossingFilter\EmbossingFilter\obj\Release\EmbossingFilter.exe
 D:\VS projects\EmbossingFilter\EmbossingFilter\obj\Release\EmbossingFilter.pdb
+D:\VS projects\EmbossingFilter\EmbossingFilter\obj\Release\EmbossingFilter.csproj.AssemblyReference.cache

@@ -1,2 +1,8 @@
 ﻿  FilterCpp.cpp
-D:\VS projects\EmbossingFilter\FilterCpp\FilterCpp.cpp(5,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+D:\VS projects\EmbossingFilter\FilterCpp\FilterCpp.cpp(6,9): warning C4101: 'check': unreferenced local variable
+     Creating library D:\VS projects\EmbossingFilter\x64\Release\FilterCpp.lib and object D:\VS projects\EmbossingFilter\x64\Release\FilterCpp.exp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 1 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  FilterCpp.vcxproj -> D:\VS projects\EmbossingFilter\x64\Release\FilterCpp.dll

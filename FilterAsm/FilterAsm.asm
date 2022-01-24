@@ -37,9 +37,6 @@ RunAsm proc a: QWORD, b: QWORD, c: DWORD, d: DWORD, e: DWORD, f: DWORD
 	; r9   -> finishPoint
 	; r10  -> width
 	; r11  -> height
-	; r14  -> currentPixel + 3
-	; r15  -> currentPixel - 3
-	; rcx  -> counter 
 	; xmm3 -> [127, 127, 127, 0]
 	;=================================================================
 
@@ -73,10 +70,7 @@ borderCheck:
 	jmp applyFilter ; if it's not a border pixel, go to filter
 
 skipPixel:
-	add r8, 3 ; go to next pixel (3 as each pixel is represented by RGB)
-	inc rcx ; 
-	;add r14, 3 ; adding 3 to the currentPixel + 3
-	;add r15, 3 ; adding 3 to the currentPixel - 3
+	add r8, 3 ; go to next pixel (3 as each pixel is represented by RGB) 
 	cmp r8, r9 ; check if current pixel is still in range for this thread
 	jge finish ; if out of range, finish
 	jmp borderCheck ; if not out of range, continue
@@ -84,51 +78,31 @@ skipPixel:
 applyFilter:
 	xor rax, rax ; rax = 0
 
-
-	;mov rax, rcx ; move counter to rax
-	;mov r14, 12 ; r14 = 12 (rgb 3 * 4 bytes per DWORD)
-	;mul r14 ; rax = rcx * 12 (counter * 12)
-	;add rax, r8 ; rax = currentPixel + 3 * 4 * counter
-	;mov r14, rax ; r14 = rax
-	;xor rax, rax ; rax = 0
-	;sub r14, 12 ; r14 = previousPixel (G)
-
 	mov al, byte ptr[r13 + r8 - 3] ; value of previousPixel (G)
 	movd xmm1, eax ; xmm1 = [G, 0, 0, 0]
-	;add r14, 4
 	mov al, byte ptr[r13 + r8 - 2] ; value of previousPixel (B)
 	pinsrd xmm1, eax, 1 ; xmm1 = [G, B, 0, 0]
-	;add r14, 4
 	mov al, byte ptr[r13 + r8 - 1] ; value of previousPixel (R)
 	pinsrd xmm1, eax, 2 ; xmm1 = [G, B, R, 0]
 
-	;add r14, 16 ; r14 = nextPixel (G)
 	mov al, byte ptr[r13 + r8 + 3] ; value of nextPixel (G)
 	movd xmm2, eax ; xmm2 = [G, 0, 0, 0]
-	;add r14, 4
 	mov al, byte ptr[r13 + r8 + 4] ; value of nextPixel (B)
 	pinsrd xmm2, eax, 1 ; xmm2 = [G, B, 0, 0]
-	;add r14, 4
 	mov al, byte ptr[r13 + r8 + 5] ; value of nextPixel (R)
 	pinsrd xmm2, eax, 2 ; xmm2 = [G, B, R, 0]
-	;xor r14, r14
 
-	subps xmm2, xmm1
-	addps xmm2, xmm3
-	
+	psubd xmm2, xmm1 ; xmm2 = [G2-G1, B2-B1, R2-R1, 0]
+	paddd xmm2, xmm3 ; xmm2 = [G2-G1+127, B2-B1+127, R2-R1+127, 0]
 
-	pextrd eax, xmm2, 0
-	mov [r12 + r8], al
-	pextrd eax, xmm2, 1
-	mov [r12 + r8 + 1], al
-	pextrd eax, xmm2, 2
-	mov [r12 + r8 + 2], al
-
+	pextrd eax, xmm2, 0 ; extract new G from xmm2
+	mov [r12 + r8], al ; currentPixel.G = new G
+	pextrd eax, xmm2, 1 ; extract new B from xmm2
+	mov [r12 + r8 + 1], al ; currentPixel.B = new B
+	pextrd eax, xmm2, 2 ; extract new R from xmm2
+	mov [r12 + r8 + 2], al ; currentPixel.R = new R
 
 	jmp skipPixel
-
-
-	
 
 finish:
 	pop r15
