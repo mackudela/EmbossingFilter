@@ -17,7 +17,7 @@ namespace EmbossingFilter
     public partial class Form1 : Form
     {
         [DllImport(@"D:\VS projects\EmbossingFilter\x64\Debug\FilterAsm.dll")]
-        static extern int MyProc1(int a, int b);
+        static extern void RunAsm(byte[] outputArray, byte[] maskArray, int startingPoint, int finishPoint, int width, int height);
 
         [DllImport(@"D:\VS projects\EmbossingFilter\x64\Debug\FilterCpp.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void RunCpp(byte[] outputArray, byte[] maskArray, int startingPoint, int finishPoint, int width, int height);
@@ -61,73 +61,15 @@ namespace EmbossingFilter
             Bitmap bmp = new Bitmap(path);
 
             byte[] byteArray = getColorData(bmp, false); // Array of bytes with GBR values inside // !!! WORKING !!! WORKING !!!
-            //byte[] newArray = getColorData(bmp, false); // Array of bytes with GBR values inside // !!! WORKING !!! WORKING !!!
             makeGrayscale(byteArray);
-            //byte[] byteArray = new byte[bmp.Width * bmp.Height * 3];
-            //byteArray = rgbToBgr(byteArray); // Changing RGB to BGR // !!! WORKING !!! WORKING !!!
-
-            //   tab[i][j] = tab[i * długośćWiersza  + j]
-            //   tab[i][j * 3] ====> [i * długość wiersza + j * 3]
-
 
             Bitmap maskBmp = new Bitmap(bmp);
-            //byte[] maskArray = getColorData(maskBmp, false);
 
-            //Console.WriteLine("maskArray Length actual: " + maskArray.Length);
-            //Console.WriteLine("byteArray Length: " + byteArray.Length);
-            //Console.WriteLine("byteArray Length by hand: " + bmp.Width * bmp.Height * 3);
-            //Console.WriteLine("maskArray Length by hand: " + (bmp.Width + 2) * (bmp.Height + 2) * 3);
-
-            //////////////////////////////////// THREADS ////////////////////////////////////
             byte[] outputArray = new byte[byteArray.Length];
 
+            //////////////////////////////////// THREADS ////////////////////////////////////
+
             int numberOfThreads = this.threadsCounter.Value;
-
-            //Console.WriteLine("(2,2).R: " + bmp.GetPixel(2,2).R);
-            //Console.WriteLine("(2,2).G: " + bmp.GetPixel(2,2).G);
-            //Console.WriteLine("(2,2).B: " + bmp.GetPixel(2,2).B);
-            //Console.WriteLine("(2,2).B but inside array: " + byteArray[2 * bmp.Width * 3 + 6]);
-            //Console.WriteLine("(2,2).G but inside array: " + byteArray[2 * bmp.Width * 3 + 7]);
-            //Console.WriteLine("(2,2).R but inside array: " + byteArray[2 * bmp.Width * 3 + 8]);
-            //Console.WriteLine("(3,2).R: " + bmp.GetPixel(3,2).R);
-            //Console.WriteLine("(3,2).G: " + bmp.GetPixel(3,2).G);
-            //Console.WriteLine("(3,2).B: " + bmp.GetPixel(3,2).B);
-            //Console.WriteLine("(3,2).B but inside array: " + byteArray[3 * (bmp.Width) * 3 + 6]);
-            //Console.WriteLine("(3,2).G but inside array: " + byteArray[3 * (bmp.Width) * 3 + 7]);
-            //Console.WriteLine("(3,2).R but inside array: " + byteArray[3 * (bmp.Width) * 3 + 8]);
-
-            //int mask = 0;
-            //for(int i = 0; i < bmp.Height; i++) {
-            //    int k = 0;
-            //    for(int j = 0; j < bmp.Width; j++) {
-            //        //maskBmp.SetPixel(i, j, bmp.GetPixel(i, j));
-            //        if(i == 0 || i == bmp.Height - 1 || j == 0 || j == bmp.Width - 1) {
-            //            k += 3;
-            //            continue;
-            //        }
-            //        mask = 
-            //            (-1 * bmp.GetPixel(i - 1,j - 1).B) + (0 * bmp.GetPixel(i - 1, j).B) + (1 * bmp.GetPixel(i - 1, j + 1).B) +
-            //            (-1 * bmp.GetPixel(i, j - 1).B) + (1 * bmp.GetPixel(i, j).B) + (1 * bmp.GetPixel(i, j + 1).B) +
-            //            (-1 * bmp.GetPixel(i + 1, j - 1).B) + (0 * bmp.GetPixel(i + 1, j).B) + (1 * bmp.GetPixel(i + 1, j + 1).B);
-            //        newArray[i * bmp.Width + k + 0] = (byte)mask;
-
-            //        mask =
-            //            (-1 * bmp.GetPixel(i - 1, j - 1).G) + (0 * bmp.GetPixel(i - 1, j).G) + (1 * bmp.GetPixel(i - 1, j + 1).G) +
-            //            (-1 * bmp.GetPixel(i, j - 1).G) + (1 * bmp.GetPixel(i, j).G) + (1 * bmp.GetPixel(i, j + 1).G) +
-            //            (-1 * bmp.GetPixel(i + 1, j - 1).G) + (0 * bmp.GetPixel(i + 1, j).G) + (1 * bmp.GetPixel(i + 1, j + 1).G);
-            //        newArray[i * bmp.Width + k + 1] = (byte)mask;
-
-            //        mask =
-            //            (-1 * bmp.GetPixel(i - 1, j - 1).R) + (0 * bmp.GetPixel(i - 1, j).R) + (1 * bmp.GetPixel(i - 1, j + 1).R) +
-            //            (-1 * bmp.GetPixel(i, j - 1).R) + (1 * bmp.GetPixel(i, j).R) + (1 * bmp.GetPixel(i, j + 1).R) +
-            //            (-1 * bmp.GetPixel(i + 1, j - 1).R) + (0 * bmp.GetPixel(i + 1, j).R) + (1 * bmp.GetPixel(i + 1, j + 1).R);
-            //        newArray[i * bmp.Width + k + 2] = (byte)mask;
-
-            //        //Console.WriteLine("Bmp G: " + bmp.GetPixel(i, j).G + " array G: " + byteArray[i * bmp.Width + k + 1]);
-            //        //Console.WriteLine("Bmp R: " + bmp.GetPixel(i, j).R + " array R: " + byteArray[i * bmp.Width + k + 2]);
-            //        k += 3;
-            //    }
-            //}
 
 
             int finishPoint = (byteArray.Length / numberOfThreads);
@@ -144,7 +86,6 @@ namespace EmbossingFilter
             int exactFinishPoint = finishPoint;
             int remainder = (byteArray.Length % numberOfThreads);
 
-            //byteArray.CopyTo(outputArray, 0);
 
             Thread[] threadsArray = new Thread[numberOfThreads];
 
@@ -169,6 +110,7 @@ namespace EmbossingFilter
                     int temp2 = exactFinishPoint + remainder + rgbAlignment;
                     int temp3 = i;
                     threadsArray[temp3] = new Thread(() => RunCpp(outputArray, byteArray, temp, temp2, width, height));
+                    //threadsArray[temp3] = new Thread(() => RunAsm(outputArray, byteArray, temp, temp2, width, height));
                     //threadsArray[temp3].Start();
                     //Console.WriteLine(i + ": " + "starting point = " + startingPoint + " exactFinishPoint: " + exactFinishPoint + " remainder: " + remainder);
                 } else {
@@ -176,6 +118,7 @@ namespace EmbossingFilter
                     int temp2 = exactFinishPoint;
                     int temp3 = i;
                     threadsArray[temp3] = new Thread(() => RunCpp(outputArray, byteArray, temp, temp2, width, height));
+                    //threadsArray[temp3] = new Thread(() => RunAsm(outputArray, byteArray, temp, temp2, width, height));
                     //threadsArray[temp3] = new Thread(new ThreadStart(ThreadProc(outputArray, byteArray, temp, temp2, bmp.Width, bmp.Height)));
                     //threadsArray[temp3].Start();
                     //Console.WriteLine(i + ": " + "starting point = " + startingPoint + " exactFinishPoint: " + exactFinishPoint);
@@ -193,18 +136,14 @@ namespace EmbossingFilter
             //////////////////////////////////// THREADS ////////////////////////////////////
 
 
-            Bitmap newBmp = new Bitmap(BuildImage(outputArray, bmp.Width, bmp.Height, bmp.Width*3, PixelFormat.Format24bppRgb)); // !!! WORKING !!! WORKING !!!
+            int bitsPerPixel = ((int)PixelFormat.Format24bppRgb & 0xff00) >> 8;
+            int bytesPerPixel = (bitsPerPixel + 7) / 8;
+            int stride = 4 * ((width * bytesPerPixel + 3) / 4);
+            //int stride = 4 * ((bmp.Width * 24 + 31) / 32); //bmp.Width*3
+            Bitmap newBmp = new Bitmap(BuildImage(outputArray, bmp.Width, bmp.Height, stride, PixelFormat.Format24bppRgb)); // !!! WORKING !!! WORKING !!!
             pictureBox2.Image = newBmp;
             newBmp.Save("output.bmp", ImageFormat.Bmp);
-            //SaveFileDialog dialog = new SaveFileDialog();
-            //if (dialog.ShowDialog() == DialogResult.OK) {
-            //    newBmp.Save(dialog.FileName, ImageFormat.Bmp);
-            //}
         }
-
-        //public static void ThreadProc(byte[] outputArray, byte[] byteArray, int temp, int temp2, int Width, int Height) {
-        //    RunCpp(outputArray, byteArray, temp, temp2, Width, Height);
-        //}
 
         private void label1_Click(object sender, EventArgs e) {
 

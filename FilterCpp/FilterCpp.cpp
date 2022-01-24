@@ -25,22 +25,16 @@ extern "C" __declspec(dllexport) void RunCpp(unsigned char* outputArray, unsigne
         middle = startingPoint;
         north = middle - (width * 3);
         south = middle + (width * 3);
+        //std::cout << "StartingPoint: " << startingPoint << " width*3: " << width * 3 << " north: " << north
+        //    << " south: " << south << std::endl;
 
         mask =
-            (-1 * maskArray[north - 3]) + (0 * maskArray[north]) + (1 * maskArray[north + 3]) +
-            (-1 * maskArray[middle - 3]) + (1 * maskArray[middle]) + (1 * maskArray[middle + 3]) +
-            (-1 * maskArray[south - 3]) + (0 * maskArray[south]) + (1 * maskArray[south + 3]);
-        mask /= 1;
-        /*if (mask < 0) {
-            mask = -mask;
-        }
-        if (mask > 255) {
-            mask = mask - 255;
-        }*/
+            (0 * maskArray[north - 3]) + (0 * maskArray[north]) + (0 * maskArray[north + 3]) +
+            (-1 * maskArray[middle - 3]) + (0 * maskArray[middle]) + (1 * maskArray[middle + 3]) +
+            (0 * maskArray[south - 3]) + (0 * maskArray[south]) + (0 * maskArray[south + 3]);
+        mask += 127;
+        //mask /= 1;
         //std::cout << mask << std::endl;
-        /*if (mask < maskArray[startingPoint]) {
-            mask = 50;
-        }*/
         outputArray[startingPoint] = mask;
     }
 }
