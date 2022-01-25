@@ -16,12 +16,12 @@ namespace EmbossingFilter
 {
     public partial class Form1 : Form
     {
-        [DllImport(@"D:\VS projects\EmbossingFilter\x64\Debug\FilterAsm.dll")]
-        //[DllImport(@"D:\VS projects\EmbossingFilter\x64\Release\FilterAsm.dll")]
+        //[DllImport(@"D:\VS projects\EmbossingFilter\x64\Debug\FilterAsm.dll")]
+        [DllImport(@"D:\VS projects\EmbossingFilter\x64\Release\FilterAsm.dll")]
         static extern void RunAsm(byte[] outputArray, byte[] maskArray, int startingPoint, int finishPoint, int width, int height);
 
-        [DllImport(@"D:\VS projects\EmbossingFilter\x64\Debug\FilterCpp.dll", CallingConvention = CallingConvention.Cdecl)]
-        //[DllImport(@"D:\VS projects\EmbossingFilter\x64\Release\FilterCpp.dll", CallingConvention = CallingConvention.Cdecl)]
+        //[DllImport(@"D:\VS projects\EmbossingFilter\x64\Debug\FilterCpp.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"D:\VS projects\EmbossingFilter\x64\Release\FilterCpp.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void RunCpp(byte[] outputArray, byte[] maskArray, int startingPoint, int finishPoint, int width, int height);
 
         public Form1()
@@ -157,8 +157,6 @@ namespace EmbossingFilter
                 watch.Stop();
                 asmTime.Text = "Asm time: " + watch.ElapsedMilliseconds + " ms";
             }
-            //watch.Stop();
-            //Console.WriteLine($"time = {watch.ElapsedMilliseconds.ToString()} ms");
 
             //////////////////////////////////// THREADS ////////////////////////////////////
 
@@ -166,7 +164,6 @@ namespace EmbossingFilter
             int bitsPerPixel = ((int)PixelFormat.Format24bppRgb & 0xff00) >> 8;
             int bytesPerPixel = (bitsPerPixel + 7) / 8;
             int stride = 4 * ((width * bytesPerPixel + 3) / 4);
-            //int stride = 4 * ((bmp.Width * 24 + 31) / 32); //bmp.Width*3
             Bitmap newBmp = new Bitmap(BuildImage(outputArray, bmp.Width, bmp.Height, stride, PixelFormat.Format24bppRgb)); // !!! WORKING !!! WORKING !!!
             pictureBox2.Image = newBmp;
             newBmp.Save("output.bmp", ImageFormat.Bmp);
@@ -183,11 +180,9 @@ namespace EmbossingFilter
 
             for (i = 0; i < byteArray.Length; i += 3) {
                 //swap R and B; raw_image[i + 1] is G, so it stays where it is.
-                //avg = 0;
                 avg = 0.114 * byteArray[i];
                 avg += 0.587 * byteArray[i + 1];
                 avg += 0.299 * byteArray[i + 2];
-                //avg /= 3;
                 byteArray[i] = (byte)avg;
                 byteArray[i + 1] = (byte)avg;
                 byteArray[i + 2] = (byte)avg;

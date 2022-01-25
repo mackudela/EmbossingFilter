@@ -1,20 +1,16 @@
 public RunAsm
 
-;RunAsm proc a: QWORD, b: QWORD, c: DWORD, d: DWORD, e: DWORD, f: DWORD
 .code
-
-; RunCpp(byte[] outputArray, byte[] maskArray, int startingPoint
-; int finishPoint, int width, int height);
 
 RunAsm proc a: QWORD, b: QWORD, c: DWORD, d: DWORD, e: DWORD, f: DWORD
 ; a(outputArray) -> rcx, b(originalArray) -> rdx, c(startingPoint) -> r8
 ; d(finishPoint) -> r9,  e(width) -> stack,       f(height) -> stack
 
-	push rbx
-	push r12
-	push r13
-	push r14 
-	push r15
+	push rbx ; pushing non-volatile registers
+	push r12 ; pushing non-volatile registers
+	push r13 ; pushing non-volatile registers
+	push r14 ; pushing non-volatile registers 
+	push r15 ; pushing non-volatile registers
 
 	;=================================================================
 
@@ -105,11 +101,11 @@ applyFilter:
 	jmp skipPixel
 
 finish:
-	pop r15
-	pop r14
-	pop r13
-	pop r12
-	pop rbx
+	pop r15 ; bringing back non-volatile registers
+	pop r14 ; bringing back non-volatile registers
+	pop r13 ; bringing back non-volatile registers
+	pop r12 ; bringing back non-volatile registers
+	pop rbx ; bringing back non-volatile registers
 	ret
 
 RunAsm endp

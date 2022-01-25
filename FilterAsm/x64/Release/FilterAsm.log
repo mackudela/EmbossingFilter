@@ -1,10 +1,10 @@
 ﻿  Assembling FilterAsm.asm...
-FilterAsm.asm(115): warning A6004: procedure argument or local not referenced : a
-FilterAsm.asm(115): warning A6004: procedure argument or local not referenced : b
-FilterAsm.asm(115): warning A6004: procedure argument or local not referenced : c
-FilterAsm.asm(115): warning A6004: procedure argument or local not referenced : d
-FilterAsm.asm(115): warning A6004: procedure argument or local not referenced : e
-FilterAsm.asm(115): warning A6004: procedure argument or local not referenced : f
+FilterAsm.asm(111): warning A6004: procedure argument or local not referenced : a
+FilterAsm.asm(111): warning A6004: procedure argument or local not referenced : b
+FilterAsm.asm(111): warning A6004: procedure argument or local not referenced : c
+FilterAsm.asm(111): warning A6004: procedure argument or local not referenced : d
+FilterAsm.asm(111): warning A6004: procedure argument or local not referenced : e
+FilterAsm.asm(111): warning A6004: procedure argument or local not referenced : f
      Creating library D:\VS projects\EmbossingFilter\x64\Release\FilterAsm.lib and object D:\VS projects\EmbossingFilter\x64\Release\FilterAsm.exp
   LINK : /LTCG specified but no code generation required; remove /LTCG from the link command line to improve linker performance
   FilterAsm.vcxproj -> D:\VS projects\EmbossingFilter\x64\Release\FilterAsm.dll
